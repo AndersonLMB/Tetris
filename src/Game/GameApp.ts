@@ -1,5 +1,6 @@
 
 import { Grid as Grid, GridStatus } from "./Grid";
+import { Color_RGBA_255 } from "./Color";
 export class GameApp {
     /**
      * 列数（宽度）
@@ -10,7 +11,10 @@ export class GameApp {
      */
     private Y: number;
 
-    private grids: Array<Grid>;
+    private OriginX: number;
+    private OriginY: number;
+
+    private grids: Array<Grid> = new Array<Grid>();
 
     private targeContext: CanvasRenderingContext2D = null;
 
@@ -19,7 +23,13 @@ export class GameApp {
         this.X = x;
         this.Y = y;
         let countOfGrids = x * y;
-        this.grids = new Array<Grid>(countOfGrids);
+
+        for (let index = 0; index < countOfGrids; index++) {
+            let grid = new Grid(GridStatus.Empty);
+            this.grids.push(grid);
+        }
+
+        console.log(this.grids);
 
     }
 
@@ -32,8 +42,8 @@ export class GameApp {
      */
     public GetGrid(x: number, y: number): Grid {
         let indexOfGrid = x + y * this.X;
-
-        return this.grids[indexOfGrid];
+        let grid = this.grids[indexOfGrid];
+        return grid;
     }
 
     public static CreateGameApp(): GameApp {
@@ -60,6 +70,12 @@ export class GameApp {
 
             let xRatio = canvasX / this.X;
             let yRatio = canvasY / this.Y;
+
+
+
+
+
+
             let minRatio = Math.min(xRatio, yRatio);
             let ratio = minRatio;
             let gameWidth = ratio * this.X;
@@ -74,7 +90,7 @@ export class GameApp {
         }
     }
 
-    public RenderGrid(): void {
+    public RenderGrid(x: number, y: number): void {
 
     }
 }
