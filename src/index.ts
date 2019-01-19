@@ -1,14 +1,16 @@
+import { GameApp } from "./Game/GameApp";
+import { Grid, GridStatus } from "./Game/Grid";
+
+
 let canvas: HTMLCanvasElement;
-let ctx: CanvasRenderingContext2D;
+let context: CanvasRenderingContext2D;
 
 try {
     let canvasHtml = document.getElementById("tetris-canvas1");
     canvas = <HTMLCanvasElement>canvasHtml;
     canvas.height = canvasHtml.clientHeight;
     canvas.width = canvasHtml.clientWidth;
-
-    ctx = canvas.getContext("2d");
-
+    context = canvas.getContext("2d");
     canvas.onresize = (ev) => {
         console.log(ev);
     }
@@ -16,13 +18,21 @@ try {
 
 }
 
+let game = GameApp.CreateGameAppByXY(10, 20);
+game.SetContext(context);
 
+
+
+
+game.Render();
 
 
 
 
 console.log(canvas.width);
 console.log(canvas.height);
+context.fillStyle
 
-ctx.fillStyle = 'green';
-ctx.fillRect(10, 10, 100, 100);
+context.fillStyle = "rgba(0,0,150,1)";
+
+context.fillRect(10, 10, 100, 100);
