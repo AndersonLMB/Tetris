@@ -1,0 +1,16 @@
+body, html{
+    color: aliceblue;
+    margin: 0;
+
+}
+
+#main{
+    height: 100%;
+    width: 100%;
+}
+
+.tetris-canvas{
+    height: 100%;
+    width:50%;
+    background-color: black;
+}
