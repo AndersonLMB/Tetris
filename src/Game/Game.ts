@@ -26,6 +26,7 @@ export class Game {
         document.body.onresize = (ev) => {
             self.ResetCanvasSize();
             self.ResetRatio();
+            self.Render();
         };
     }
     public GetContext(): CanvasRenderingContext2D {
@@ -36,8 +37,11 @@ export class Game {
      * 重新设置canvas尺寸
      */
     public ResetCanvasSize(): void {
-        console.log(this.canvasTarget.width = this.canvasTarget.clientWidth);
-        console.log(this.canvasTarget.height = this.canvasTarget.clientHeight);
+    
+        this.canvasTarget.width = this.canvasTarget.clientWidth;
+        this.canvasTarget.height = this.canvasTarget.clientHeight;
+
+        console.log( `Canvas size reset to width:${this.canvasTarget.width} height:${ this.canvasTarget.height}`);
     }
 
     private ratio: number = 1;
@@ -47,7 +51,8 @@ export class Game {
         let xRatio: number = width / this.X;
         let yRatio: number = height / this.Y;
         let minRatio: number = Math.min(xRatio, yRatio);
-        this.ratio = Math.floor(minRatio);
+        // this.ratio = Math.floor(minRatio);
+        this.ratio = minRatio;
     }
 
     /**
@@ -92,15 +97,16 @@ export class Game {
         for (let y = 0; y < this.Y; y++) {
             for (let x = 0; x < this.X; x++) {
                 try {
-                    console.log(`x:${x} y:${y}`);
+                    // console.log(`x:${x} y:${y}`);
                     let gameGrid = this.GetGameGrid(x, y);
                     let colorString = gameGrid.color.toString();
                     let gridSize = this.GetRatio();
                     let coordinate = this.GetLeftTopCoordinateOfGrid(x, y);
                     let context = this.GetContext();
                     context.fillStyle = colorString;
-
+                    context.strokeStyle = "rgba(200,200,200,1)";
                     context.fillRect(coordinate.x, coordinate.y, gridSize, gridSize);
+                    context.strokeRect(coordinate.x, coordinate.y, gridSize, gridSize);
                 } catch (error) {
                     throw error;
                 }

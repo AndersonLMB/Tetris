@@ -18,4 +18,11 @@ try {
 let game: Game = new Game(10, 20);
 game.SetTarget(canvas);
 
+var grid = game.GetGameGrid(3, 4);
+grid.color.red = 250;
+grid.color.blue = 0;
+
+game.Render()
+
+
 window["game"] = game;
