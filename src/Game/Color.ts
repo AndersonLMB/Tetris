@@ -1,26 +1,26 @@
+export class Color {
+    /**
+     * R (0-255)
+     */
+    public red: number = 0;
+    /**
+     * G (0-255)
+     */
+    public green: number = 0;
+    /**
+     * B (0-255)
+     */
+    public blue: number = 200;
+    /**
+     * Alpha (0-1)
+     */
+    public alpha_float: number = 1;
 
-const C255Number: number = 255;
-export class Color_RGBA_255 {
-
-
-    public Red: number;
-    public Green: number;
-    public Blue: number;
-    public Alpha: number;
-    constructor(r: number, g: number, b: number, a: number) {
-        this.Alpha = a;
-        this.Blue = b;
-        this.Green = g;
-        this.Red = r;
-    }
     public toString(): string {
-        let red = Math.min(C255Number * this.Red, C255Number);
-        let green = Math.min(C255Number * this.Green, C255Number);
-        let blue = Math.min(C255Number * this.Blue, C255Number);
-        return `rgba(${red},${green},${blue},${this.Alpha})`;
+        let rgbaString: string = `rgba(${this.red},${this.green},${this.blue},${this.alpha_float})`;
+        return rgbaString;
     }
+
+
+
 }
-
-
-
-

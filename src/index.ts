@@ -15,6 +15,8 @@ try {
 } catch (error) {
     throw error;
 }
+
+
 let game: Game = new Game(10, 20);
 game.SetTarget(canvas);
 

@@ -1,5 +1,4 @@
 import { GameGrid } from "./GameGrid"
-import { error } from "util";
 
 export class Game {
     /**
@@ -133,7 +132,6 @@ export class Game {
         return this.GetTarget().height;
     }
 
-
     public GetLeftTopCoordinateOfGrid(x: number, y: number): Coordinate {
         let width = this.GetWidth();
         let height = this.GetHeight();
@@ -142,11 +140,9 @@ export class Game {
         let yResult = height - (y + 1) * ratio - (height - this.Y * ratio);
         return { x: xResult, y: yResult };
     }
-
-
-
 }
-interface Coordinate {
+
+export interface Coordinate {
     x: number,
     y: number,
 }

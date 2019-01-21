@@ -1,7 +1,10 @@
-import { Color } from "./Color.1"
+import { Color } from "./Color"
 
 export class GameGrid {
     public color: Color = new Color();
+    
+
 }
+
 
 
