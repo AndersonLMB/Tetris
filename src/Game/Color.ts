@@ -16,6 +16,13 @@ export class Color {
      */
     public alpha_float: number = 1;
 
+    public SetRGBA(red: number, green: number, blue: number, alpha: number): void {
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.alpha_float = alpha;
+    }
+
     public toString(): string {
         let rgbaString: string = `rgba(${this.red},${this.green},${this.blue},${this.alpha_float})`;
         return rgbaString;

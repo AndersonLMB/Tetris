@@ -1,6 +1,19 @@
-import { GameGrid } from "./GameGrid"
+import { GameGrid } from "./GameGrid";
+import { Tetromino } from "./Tetromino";
+import { CoordinateFloat } from "./CoordinateFloat";
+import { PositionInt } from "./PositionInt";
+// import { ILiteEvent, LiteEvent } from "./Event"
 
 export class Game {
+
+    public static offsetOfLeftOfNewTetromino: number = 3;
+    public static offsetOfBottomOfNewTetromino: number = 19;
+
+
+    public onNewTetrominoAddedListeners: Array<NewTetrominoAddedDelegate> = new Array<NewTetrominoAddedDelegate>();
+
+
+
     /**
      * 游戏宽度
      */
@@ -36,11 +49,11 @@ export class Game {
      * 重新设置canvas尺寸
      */
     public ResetCanvasSize(): void {
-    
+
         this.canvasTarget.width = this.canvasTarget.clientWidth;
         this.canvasTarget.height = this.canvasTarget.clientHeight;
 
-        console.log( `Canvas size reset to width:${this.canvasTarget.width} height:${ this.canvasTarget.height}`);
+        console.log(`Canvas size reset to width:${this.canvasTarget.width} height:${this.canvasTarget.height}`);
     }
 
     private ratio: number = 1;
@@ -75,6 +88,12 @@ export class Game {
         return resultGameGrid;
     }
 
+    public GetPositionByIndex(index: number): PositionInt {
+        let x = index % (this.X);
+        let y = Math.floor(index / this.X);
+        return { x: x, y: y };
+    }
+
     constructor(x: number, y: number) {
         this.X = x;
         this.Y = y;
@@ -83,6 +102,46 @@ export class Game {
             let gameGrid = new GameGrid();
             this.gameGrids.push(gameGrid);
         }
+    }
+
+    /**
+     * 俄罗斯方块
+     */
+    private tetrominos: Array<Tetromino> = new Array<Tetromino>();
+    public GetTetrominos(): Array<Tetromino> {
+        let tetrominos = this.tetrominos;
+        return tetrominos;
+    }
+
+    public AddNewTetromino(tetromino: Tetromino): void {
+
+    }
+
+    public AddNewTetrominoAtXY(tetromino: Tetromino, x: number, y: number): void {
+        this.tetrominos.push(tetromino);
+        tetromino.SetLeftBottomPosition({ x: x, y: y });
+        let game = this;
+        this.RefreshGameGrids();
+    }
+
+    public RefreshGameGrids(): void {
+        let game = this;
+        //遍历每个俄罗斯方块
+        this.GetTetrominos().forEach((tetromino, indexOfTetrominos) => {
+            console.log(tetromino);
+            //遍历俄罗斯方块的每个格子
+            let leftBottomPosition = tetromino.GetLeftBottomPosition();
+            tetromino.GetGrids().forEach((blocked, indexOfGrids) => {
+                if (blocked) {
+                    let positionOfThisBlockInTetromino = tetromino.GetPositionOfByIndex(indexOfGrids);
+                    let xOfThisBlockInGame = leftBottomPosition.x + positionOfThisBlockInTetromino.x;
+                    let yOfThisBlockInGame = leftBottomPosition.y + positionOfThisBlockInTetromino.y;
+                    console.log({ x: xOfThisBlockInGame, y: yOfThisBlockInGame });
+                    let gridInGameOfThisBlock = game.GetGameGrid(xOfThisBlockInGame, yOfThisBlockInGame);
+                    gridInGameOfThisBlock.color = tetromino.GetColor();
+                }
+            });
+        });
     }
 
     /**
@@ -109,7 +168,6 @@ export class Game {
                 } catch (error) {
                     throw error;
                 }
-
             }
         }
     }
@@ -132,7 +190,12 @@ export class Game {
         return this.GetTarget().height;
     }
 
-    public GetLeftTopCoordinateOfGrid(x: number, y: number): Coordinate {
+    /**
+     * 获取左上角坐标
+     * @param x 
+     * @param y 
+     */
+    public GetLeftTopCoordinateOfGrid(x: number, y: number): CoordinateFloat {
         let width = this.GetWidth();
         let height = this.GetHeight();
         let ratio = this.GetRatio();
@@ -142,7 +205,6 @@ export class Game {
     }
 }
 
-export interface Coordinate {
-    x: number,
-    y: number,
+export interface NewTetrominoAddedDelegate {
+    (game: Game, tetromino: Tetromino): void;
 }
