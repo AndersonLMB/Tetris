@@ -12,5 +12,8 @@
   "devDependencies": {
     "parcel-bundler": "^1.11.0",
     "typescript": "^3.2.4"
+  },
+  "dependencies": {
+    "keycode-js": "^1.0.3"
   }
 }

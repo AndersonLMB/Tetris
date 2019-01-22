@@ -1,8 +1,10 @@
-
-
 import { Game } from "./Game/Game";
 import { GameGrid } from "./Game/GameGrid";
 import { Tetromino, TetrominoShapes } from "./Game/Tetromino";
+
+
+import * as KeyCode from "keycode-js";
+
 
 let element: HTMLElement;
 try {
@@ -30,11 +32,46 @@ tetJ.GetColor().SetRGBA(255, 0, 0, 1);
 let tetO = new Tetromino(TetrominoShapes.O);
 tetO.GetColor().SetRGBA(0, 200, 0, 1);
 game.AddNewTetrominoAtXY(tetO, 2, 3);
-game.AddNewTetrominoAtXY(tetJ, 4, 6);
+game.AddNewTetrominoAtXY(tetJ, 1, 6);
 
-game.Render()
+tetJ.MoveRightByOne()
+    .MoveRightByOne()
+    .MoveRightByOne()
+    .MoveDownByOne()
+    .MoveByXY(0, 3);
+game.Render();
 
 
+
+document.body.onkeydown = (ev) => {
+    console.log(ev);
+
+    switch (ev.keyCode) {
+        case KeyCode.KEY_LEFT:
+            {
+                tetJ.MoveLeftByOne();
+                game.Render()
+            }
+            break;
+
+        case KeyCode.KEY_RIGHT: {
+            tetJ.MoveRightByOne();
+            game.Render();
+        } break;
+        case KeyCode.KEY_DOWN: {
+            tetJ.MoveDownByOne();
+            game.Render();
+        } break;
+        case KeyCode.KEY_UP: {
+            tetJ.MoveUpByOne();
+            game.Render();
+        }
+            break;
+        default:
+            break;
+    }
+
+}
 
 
 window["game"] = game;

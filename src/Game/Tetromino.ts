@@ -33,11 +33,37 @@ export class Tetromino {
      * @param x x偏移量,正向右
      * @param y y偏移量,正向上
      */
-    public MoveByXY(x: number, y: number): void {
-        let position = this.GetLeftBottomPosition();
-
-
+    public MoveByXY(x: number, y: number): Tetromino {
+        let leftBottomPositionOfTetromino = this.GetLeftBottomPosition();
+        let xAfterMove = leftBottomPositionOfTetromino.x + x;
+        let yAfterMove = leftBottomPositionOfTetromino.y + y;
+        this.SetLeftBottomPosition({ x: xAfterMove, y: yAfterMove });
+        return this;
         // this.SetLeftBottomPosition( { x:    position.x+x   })
+    }
+    /**
+     * 向下移动
+     */
+    public MoveDownByOne(): Tetromino {
+        return this.MoveByXY(0, -1);
+    }
+    /**
+     * 向左移动
+     */
+    public MoveLeftByOne(): Tetromino {
+        return this.MoveByXY(-1, 0);
+    }
+    /**
+     * 向右移动
+     */
+    public MoveRightByOne(): Tetromino {
+        return this.MoveByXY(1, 0);
+    }
+    /**
+     * 向上移动
+     */
+    public MoveUpByOne(): Tetromino {
+        return this.MoveByXY(0, 1);
     }
 
     public SetGrid(x: number, y: number, bool: boolean): Tetromino {
@@ -100,6 +126,9 @@ export class Tetromino {
     }
 }
 
+export class TetrominoFactory {
+
+}
 class TetrominoGrid {
 
 }

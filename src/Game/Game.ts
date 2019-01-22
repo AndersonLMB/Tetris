@@ -2,6 +2,7 @@ import { GameGrid } from "./GameGrid";
 import { Tetromino } from "./Tetromino";
 import { CoordinateFloat } from "./CoordinateFloat";
 import { PositionInt } from "./PositionInt";
+import { Color } from "./Color";
 // import { ILiteEvent, LiteEvent } from "./Event"
 
 export class Game {
@@ -126,6 +127,11 @@ export class Game {
 
     public RefreshGameGrids(): void {
         let game = this;
+
+        game.GetGameGrids().forEach((grid, index) => {
+            grid.color= new Color();
+        });
+
         //遍历每个俄罗斯方块
         this.GetTetrominos().forEach((tetromino, indexOfTetrominos) => {
             console.log(tetromino);
@@ -152,6 +158,7 @@ export class Game {
             throw new Error("Target not set yet.");
         }
 
+        this.RefreshGameGrids();
         for (let y = 0; y < this.Y; y++) {
             for (let x = 0; x < this.X; x++) {
                 try {
