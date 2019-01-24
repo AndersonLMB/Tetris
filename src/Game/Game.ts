@@ -1,8 +1,10 @@
 import { GameGrid } from "./GameGrid";
-import { Tetromino } from "./Tetromino";
+import { Tetromino, TetrominoShapes } from "./Tetromino";
 import { CoordinateFloat } from "./CoordinateFloat";
 import { PositionInt } from "./PositionInt";
 import { Color } from "./Color";
+import { MathUtils } from "./Utils";
+
 // import { ILiteEvent, LiteEvent } from "./Event"
 
 export class Game {
@@ -105,6 +107,19 @@ export class Game {
         }
     }
 
+    public Reset(): void {
+
+
+        let tetrominos = this.GetTetrominos();
+        tetrominos.forEach((tetromino) => {
+
+
+
+        });
+    }
+
+
+
     /**
      * 俄罗斯方块
      */
@@ -114,12 +129,42 @@ export class Game {
         return tetrominos;
     }
 
-    public AddNewTetromino(tetromino: Tetromino): void {
+    public ClearTetrominos(): void {
+        this.tetrominos = new Array<Tetromino>();
 
+    }
+
+    public GenerateTetrominoRandomly(): Tetromino {
+        const enumValues = Object.keys(TetrominoShapes).map(n => Number.parseInt(n)).filter(n => !Number.isNaN(n));
+        const randomIndex = MathUtils.getRandomInt(enumValues.length);
+        const randomEnumValue = <TetrominoShapes>(enumValues[randomIndex]);
+        const randomPosition: PositionInt = {
+            x: MathUtils.getRandomIntBetween(0, this.X - 4),
+            y: MathUtils.getRandomIntBetween(0, this.Y - 4)
+        };
+        const randomColor: Color = new Color();
+        randomColor.SetRGBA(MathUtils.getRandomInt(256), MathUtils.getRandomInt(256), MathUtils.getRandomInt(256), Math.random());
+        let newTetromino = this.GenerateTetromino(randomEnumValue, randomPosition);
+        newTetromino.SetColor(randomColor);
+        return newTetromino;
+        // throw new Error("Not Implemented");
+    }
+
+    public GenerateTetromino(shape: TetrominoShapes, positionInt: PositionInt): Tetromino {
+        let tetromino: Tetromino = new Tetromino(shape);
+        this.AddNewTetromino(tetromino);
+        tetromino.SetLeftBottomPosition(positionInt);
+        this.Render();
+        return tetromino;
+    }
+
+    public AddNewTetromino(tetromino: Tetromino): void {
+        this.AddNewTetrominoAtXY(tetromino, tetromino.GetLeftBottomPosition().x, tetromino.GetLeftBottomPosition().y);
     }
 
     public AddNewTetrominoAtXY(tetromino: Tetromino, x: number, y: number): void {
         this.tetrominos.push(tetromino);
+        tetromino.SetGame(this);
         tetromino.SetLeftBottomPosition({ x: x, y: y });
         let game = this;
         this.RefreshGameGrids();
@@ -129,7 +174,7 @@ export class Game {
         let game = this;
 
         game.GetGameGrids().forEach((grid, index) => {
-            grid.color= new Color();
+            grid.color = new Color();
         });
 
         //遍历每个俄罗斯方块
@@ -209,6 +254,20 @@ export class Game {
         let xResult = x * ratio;
         let yResult = height - (y + 1) * ratio - (height - this.Y * ratio);
         return { x: xResult, y: yResult };
+    }
+
+    /**
+     * 检查位置是否在game范围内
+     * @param position 
+     */
+    public IsPositionInGame(position: PositionInt): boolean {
+        let x = position.x;
+        let y = position.y;
+        let inGame: boolean = false;
+        if ((0 <= x && x < this.X) && (0 <= y && y < this.Y)) {
+            inGame = true;
+        }
+        return inGame;
     }
 }
 

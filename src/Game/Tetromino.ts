@@ -1,5 +1,6 @@
 import { Color } from "./Color";
 import { PositionInt } from "./PositionInt";
+import { Game } from "./Game";
 export class Tetromino {
 
     size: number = 4;
@@ -37,6 +38,10 @@ export class Tetromino {
         let leftBottomPositionOfTetromino = this.GetLeftBottomPosition();
         let xAfterMove = leftBottomPositionOfTetromino.x + x;
         let yAfterMove = leftBottomPositionOfTetromino.y + y;
+
+        let blocksOfTetrominoInGame: boolean = false;
+        
+
         this.SetLeftBottomPosition({ x: xAfterMove, y: yAfterMove });
         return this;
         // this.SetLeftBottomPosition( { x:    position.x+x   })
@@ -119,10 +124,20 @@ export class Tetromino {
                 this.FillGrid(0, 0).FillGrid(1, 0).FillGrid(2, 0).FillGrid(1, 1);
             } break;
             case TetrominoShapes.Z: {
-                this.FillGrid(0, 1).FillGrid(1, 0).FillGrid(2, 0).FillGrid(3, 0);
+                this.FillGrid(0, 1).FillGrid(1, 0).FillGrid(2, 0).FillGrid(1, 1);
             } break;
             default: { } break;
         }
+    }
+    /**
+     * 绑定的Game
+     */
+    private game: Game;
+    public GetGame(): Game {
+        return this.game;
+    }
+    public SetGame(game: Game): void {
+        this.game = game;
     }
 }
 

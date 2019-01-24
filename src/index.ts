@@ -1,6 +1,7 @@
 import { Game } from "./Game/Game";
 import { GameGrid } from "./Game/GameGrid";
 import { Tetromino, TetrominoShapes } from "./Game/Tetromino";
+import { MathUtils } from "./Game/Utils";
 
 
 import * as KeyCode from "keycode-js";
@@ -20,7 +21,7 @@ try {
 }
 
 
-let game: Game = new Game(10, 20);
+let game: Game = new Game(10, 23);
 game.SetTarget(canvas);
 
 var grid = game.GetGameGrid(3, 4);
@@ -40,8 +41,6 @@ tetJ.MoveRightByOne()
     .MoveDownByOne()
     .MoveByXY(0, 3);
 game.Render();
-
-
 
 document.body.onkeydown = (ev) => {
     console.log(ev);
@@ -70,10 +69,8 @@ document.body.onkeydown = (ev) => {
         default:
             break;
     }
-
 }
-
 
 window["game"] = game;
 window["Tetromino"] = Tetromino;
-window["TetrominoShapes"] = TetrominoShapes; 
+window["TetrominoShapes"] = TetrominoShapes;
