@@ -24,11 +24,62 @@ export class Tetromino {
         let resultBool = this.grids[indexOfGrid];
         return resultBool;
     }
+    /**
+     * 给出整数获取该整数在该Tetromino的位置
+     * @param index 
+     */
     public GetPositionOfByIndex(index: number): PositionInt {
         let y: number = Math.floor(index / this.size);
         let x: number = index % (this.size);
         return { x: x, y: y };
     }
+
+    /**
+     * 获取该Tetromino的所有Block的位置(相对于Tetromino的左下方)
+     */
+    public GetPositionsOfGridsOfTetromino(): Array<PositionInt> {
+        let positions: Array<PositionInt> = new Array<PositionInt>();
+        let grids = this.GetGrids();
+        grids.forEach((gridOfTetromino, indexOfGrid) => {
+            if (gridOfTetromino) {
+                let position: PositionInt = this.GetPositionOfByIndex(indexOfGrid);
+                positions.push(position);
+            }
+        });
+        return positions;
+    }
+
+    /**
+     * 获取该Tetromino的所有Block的位置(相对于Tetromino的左下方)
+     */
+    public GetPositionsOfGridsOfTetrominoInGame(): Array<PositionInt> {
+        let positionsOfGridsInTetromino = this.GetPositionsOfGridsOfTetromino()
+        let positionsBasedOnGame = positionsOfGridsInTetromino.map((positionBasedOnTetromino) => {
+            let positionBasedOnGame: PositionInt = {
+                x: positionBasedOnTetromino.x + this.GetLeftBottomPosition().x,
+                y: positionBasedOnTetromino.y + this.GetLeftBottomPosition().y
+            };
+            return positionBasedOnGame;
+        });
+        return positionsBasedOnGame;
+    }
+
+    /**
+     * 获取尝试移动后新的位置
+     * @param x 
+     * @param y 
+     */
+    public GetPositionsOfGridsOfTetrominoInGameIfMoveByXY(x: number, y: number): Array<PositionInt> {
+        let originalPositions = this.GetPositionsOfGridsOfTetrominoInGame();
+        let newPositions: Array<PositionInt> = originalPositions.map((originalPosition) => {
+            let newPosition: PositionInt = { x: originalPosition.x + x, y: originalPosition.y + y };
+            return newPosition;
+        });
+        return newPositions;
+    }
+
+    
+
     /**
      * 根据偏移量移动俄罗斯方块
      * @param x x偏移量,正向右
@@ -38,10 +89,7 @@ export class Tetromino {
         let leftBottomPositionOfTetromino = this.GetLeftBottomPosition();
         let xAfterMove = leftBottomPositionOfTetromino.x + x;
         let yAfterMove = leftBottomPositionOfTetromino.y + y;
-
         let blocksOfTetrominoInGame: boolean = false;
-        
-
         this.SetLeftBottomPosition({ x: xAfterMove, y: yAfterMove });
         return this;
         // this.SetLeftBottomPosition( { x:    position.x+x   })
@@ -71,6 +119,14 @@ export class Tetromino {
         return this.MoveByXY(0, 1);
     }
 
+    public CanMoveByXY(x: number, y: number): void {
+
+    }
+
+
+
+
+
     public SetGrid(x: number, y: number, bool: boolean): Tetromino {
         let indexOfGrid = x + y * this.size;
         this.grids[indexOfGrid] = bool;
@@ -89,6 +145,7 @@ export class Tetromino {
     public GetGrids(): Array<boolean> {
         return this.grids;
     }
+
 
     /**
      * 左下位置
@@ -139,6 +196,9 @@ export class Tetromino {
     public SetGame(game: Game): void {
         this.game = game;
     }
+
+
+
 }
 
 export class TetrominoFactory {

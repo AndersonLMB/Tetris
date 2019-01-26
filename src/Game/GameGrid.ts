@@ -6,7 +6,7 @@ export class GameGrid {
     /**
      * 是否存在方块
      */
-    private blocked: boolean;
+    private blocked: boolean = false;
     public GetBlocked(): boolean {
         return this.blocked;
     }
@@ -14,7 +14,7 @@ export class GameGrid {
         this.blocked = blocked;
     }
 
-    
+
 
 }
 

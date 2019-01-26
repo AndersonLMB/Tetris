@@ -11,11 +11,7 @@ export class Game {
 
     public static offsetOfLeftOfNewTetromino: number = 3;
     public static offsetOfBottomOfNewTetromino: number = 19;
-
-
     public onNewTetrominoAddedListeners: Array<NewTetrominoAddedDelegate> = new Array<NewTetrominoAddedDelegate>();
-
-
 
     /**
      * 游戏宽度
@@ -55,7 +51,6 @@ export class Game {
 
         this.canvasTarget.width = this.canvasTarget.clientWidth;
         this.canvasTarget.height = this.canvasTarget.clientHeight;
-
         console.log(`Canvas size reset to width:${this.canvasTarget.width} height:${this.canvasTarget.height}`);
     }
 
@@ -170,6 +165,25 @@ export class Game {
         this.RefreshGameGrids();
     }
 
+    /**
+     * 将某个tetromino移出game
+     * @param tetromino 
+     */
+    public RemoveTetrominoFromGame(tetromino: Tetromino): void {
+        let indexOfTetromino = this.tetrominos.indexOf(tetromino);
+        if (indexOfTetromino < 0) {
+            throw new Error("Tetromino not belong to the game");
+        }
+        this.RemoveTetrominoFromGameByIndexOfTetrominoInGame(indexOfTetromino);
+    }
+    /**
+     * 根据索引号将tetromino移出game
+     * @param index 
+     */
+    public RemoveTetrominoFromGameByIndexOfTetrominoInGame(index: number): void {
+        this.tetrominos.splice(index, 1);
+    }
+
     public RefreshGameGrids(): void {
         let game = this;
 
@@ -268,6 +282,40 @@ export class Game {
             inGame = true;
         }
         return inGame;
+    }
+
+    public TurnGameGridToBlocked(position: PositionInt): void {
+        let x = position.x;
+        let y = position.y;
+        if (this.IsPositionInGame(position) == false) {
+            throw new Error("Position not in game, unable to turn grid to block!");
+        }
+        let gameGridToTurnBlocked = this.GetGameGrid(x, y);
+        gameGridToTurnBlocked.SetBlocked(true);
+        this.Render();
+    }
+
+    public TurnGameGridToBlockedByTetromino(tetromino: Tetromino): void {
+        let gridsOfTetromino = tetromino.GetGrids();
+        let positionOfTetrominoInGame = tetromino.GetLeftBottomPosition();
+        gridsOfTetromino.forEach((gridOfTetromino, indexOfTetromino) => {
+            console.log(gridOfTetromino);
+            if (gridOfTetromino) {
+                let positionOfGridInTetromino = tetromino.GetPositionOfByIndex(indexOfTetromino);
+                let positionOfGridInGame: PositionInt = {
+                    x: positionOfGridInTetromino.x + positionOfTetrominoInGame.x,
+                    y: positionOfGridInTetromino.y + positionOfTetrominoInGame.y
+                }
+                this.TurnGameGridToBlocked(positionOfGridInGame);
+                let color = tetromino.GetColor();
+                this.TurnGameGridToColor(positionOfGridInGame, color);
+            }
+        });
+    }
+
+    public TurnGameGridToColor(position: PositionInt, color: Color): void {
+        let gridOfGame = this.GetGameGrid(position.x, position.y);
+        gridOfGame.color.SetRGBA(color.red, color.green, color.blue, color.alpha_float);
     }
 }
 
