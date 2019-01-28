@@ -81,6 +81,10 @@ export class Game {
      * @param y 
      */
     public GetGameGrid(x: number, y: number): GameGrid {
+        if (!(this.IfPositionInGame({ x: x, y: y }))) {
+            throw new Error("Position not in Game");
+        }
+
         let indexOfGameGrid = x + this.X * y;
         let resultGameGrid = this.GetGameGrids()[indexOfGameGrid];
         return resultGameGrid;
@@ -90,6 +94,29 @@ export class Game {
         let x = index % (this.X);
         let y = Math.floor(index / this.X);
         return { x: x, y: y };
+    }
+
+    /**
+     * position是否在game内
+     * @param position 
+     */
+    public IfPositionInGame(position: PositionInt): boolean {
+        let positionInGame: boolean = false;
+        if ((0 <= position.x && position.x < this.X) && (0 <= position.y && position.y < this.Y)) {
+            positionInGame = true;
+        }
+        return positionInGame;
+    }
+
+    /**
+     * position的格子是否已经固定
+     * @param position 
+     */
+    public IfPositionBlocked(position: PositionInt): boolean {
+        let ifGivenPositionInGameIsBlocked: boolean = true;
+        let gameGrid = this.GetGameGrid(position.x, position.y);
+        ifGivenPositionInGameIsBlocked = gameGrid.GetBlocked();
+        return ifGivenPositionInGameIsBlocked;
     }
 
     constructor(x: number, y: number) {
@@ -103,17 +130,10 @@ export class Game {
     }
 
     public Reset(): void {
-
-
         let tetrominos = this.GetTetrominos();
         tetrominos.forEach((tetromino) => {
-
-
-
         });
     }
-
-
 
     /**
      * 俄罗斯方块
@@ -129,6 +149,9 @@ export class Game {
 
     }
 
+    /**
+     * 随机生成Tetromino,形状随机,位置随机(在game范围内)
+     */
     public GenerateTetrominoRandomly(): Tetromino {
         const enumValues = Object.keys(TetrominoShapes).map(n => Number.parseInt(n)).filter(n => !Number.isNaN(n));
         const randomIndex = MathUtils.getRandomInt(enumValues.length);
@@ -145,6 +168,11 @@ export class Game {
         // throw new Error("Not Implemented");
     }
 
+    /**
+     * 在指定position生成指定shape的Tetromino
+     * @param shape  形状类型
+     * @param positionInt 位置
+     */
     public GenerateTetromino(shape: TetrominoShapes, positionInt: PositionInt): Tetromino {
         let tetromino: Tetromino = new Tetromino(shape);
         this.AddNewTetromino(tetromino);
@@ -153,10 +181,20 @@ export class Game {
         return tetromino;
     }
 
+    /**
+     * 添加Tetromino到Game里
+     * @param tetromino 
+     */
     public AddNewTetromino(tetromino: Tetromino): void {
         this.AddNewTetrominoAtXY(tetromino, tetromino.GetLeftBottomPosition().x, tetromino.GetLeftBottomPosition().y);
     }
 
+    /**
+     * 添加Tetromino到Game里，指定位置
+     * @param tetromino 
+     * @param x 
+     * @param y 
+     */
     public AddNewTetrominoAtXY(tetromino: Tetromino, x: number, y: number): void {
         this.tetrominos.push(tetromino);
         tetromino.SetGame(this);
@@ -295,6 +333,10 @@ export class Game {
         this.Render();
     }
 
+    /**
+     * 根据Tetromino占用的格子的位置在game中生成固定方块
+     * @param tetromino 
+     */
     public TurnGameGridToBlockedByTetromino(tetromino: Tetromino): void {
         let gridsOfTetromino = tetromino.GetGrids();
         let positionOfTetrominoInGame = tetromino.GetLeftBottomPosition();
@@ -312,6 +354,18 @@ export class Game {
             }
         });
     }
+    /**
+     * 根据Tetromino占用的格子的位置在game中生成固定方块并在game移除该tetromino
+     * @param tetromino 
+     */
+    public TurnGameGridToBlockedByTetrominoAndRemoveTetrominoFromGame(tetromino: Tetromino): void {
+        this.TurnGameGridToBlockedByTetromino(tetromino);
+        this.RemoveTetrominoFromGame(tetromino);
+    }
+
+
+
+
 
     public TurnGameGridToColor(position: PositionInt, color: Color): void {
         let gridOfGame = this.GetGameGrid(position.x, position.y);

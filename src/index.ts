@@ -3,7 +3,7 @@ import { GameGrid } from "./Game/GameGrid";
 import { Tetromino, TetrominoShapes } from "./Game/Tetromino";
 import { MathUtils } from "./Game/Utils";
 
-
+import { GameRun } from "./Test/GameRun";
 import * as KeyCode from "keycode-js";
 
 
@@ -41,7 +41,7 @@ game.SetTarget(canvas);
 //     .MoveDownByOne()
 //     .MoveByXY(0, 3);
 game.Render();
-
+// GameRun.RunNormally(game);
 // document.body.onkeydown = (ev) => {
 //     console.log(ev);
 

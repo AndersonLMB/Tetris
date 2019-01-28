@@ -78,8 +78,6 @@ export class Tetromino {
         return newPositions;
     }
 
-    
-
     /**
      * 根据偏移量移动俄罗斯方块
      * @param x x偏移量,正向右
@@ -119,13 +117,51 @@ export class Tetromino {
         return this.MoveByXY(0, 1);
     }
 
-    public CanMoveByXY(x: number, y: number): void {
-
+    /**
+     * 是否允许移动x,y
+     * @param x 
+     * @param y 
+     */
+    public CanMoveByXY(x: number, y: number): boolean {
+        let canMovedByXY: boolean = false;
+        let movedPositions = this.GetPositionsOfGridsOfTetrominoInGameIfMoveByXY(x, y);
+        let game = this.GetGame();
+        let results = movedPositions.map((position) => {
+            return (game.IfPositionInGame(position) && !(game.IfPositionBlocked(position)));
+        });
+        canMovedByXY = !(results.includes(false));
+        return canMovedByXY;
     }
 
+    public TryMoveByXY(x: number, y: number): boolean {
+        if (this.CanMoveByXY(x, y)) {
+            this.MoveByXY(x, y);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
+    public TryMoveByXYAndExecutor(x: number, y: number, executor: MoveActionExecutor): void {
+        switch (executor) {
+            case MoveActionExecutor.Gravity:
+                {
+                    let moveResult = this.TryMoveByXY(x, y);
+                    if (!moveResult) {
+                        this.GetGame().TurnGameGridToBlockedByTetrominoAndRemoveTetrominoFromGame(this);
+                    }
+                }
+                break;
+            case MoveActionExecutor.Player:
+                {
+                    let moveResult = this.TryMoveByXY(x, y);
+                } break;
 
-
+            default:
+                break;
+        }
+    }
 
     public SetGrid(x: number, y: number, bool: boolean): Tetromino {
         let indexOfGrid = x + y * this.size;
@@ -196,9 +232,10 @@ export class Tetromino {
     public SetGame(game: Game): void {
         this.game = game;
     }
+}
 
-
-
+export enum MoveActionExecutor {
+    Player, Gravity
 }
 
 export class TetrominoFactory {
